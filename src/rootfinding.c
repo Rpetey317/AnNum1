@@ -9,7 +9,7 @@
 #include <math.h>
 
 raiz_t *biseccion(raiz_t *raiz, double (*func)(double), const double intervalo[2], int iteraciones, double maxAbsErr,
-                  double maxRelErr, bool conPrint) {
+                  double maxRelErr) {
 
     if (intervalo[0] > intervalo[1] || !raiz){
         return NULL;
@@ -45,7 +45,7 @@ raiz_t *biseccion(raiz_t *raiz, double (*func)(double), const double intervalo[2
 }
 
 raiz_t *ptofijo(raiz_t *raiz, double (*func)(double), const double intervalo[2], int iteraciones, double maxAbsErr,
-                double maxRelErr, bool conPrint) {
+                double maxRelErr) {
     if (intervalo[0] > intervalo[1] || !raiz){
         return NULL;
     }
@@ -76,5 +76,106 @@ raiz_t *ptofijo(raiz_t *raiz, double (*func)(double), const double intervalo[2],
 
     return raiz;
 }
+
+raiz_t *newtonRaphson(raiz_t *raiz, double (*func)(double), double (*derivada)(double), const double intervalo[2],
+                      int iteraciones, double maxAbsErr, double maxRelErr) {
+    if (intervalo[0] > intervalo[1] || !raiz){
+        return NULL;
+    }
+
+    bool condAbsErr = true, condRelErr = true;
+    double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
+    int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
+    int i = 0;
+    double p = (intervalo[1] - intervalo[0])/2, p_prev;
+
+    while((i < maxIter) & condAbsErr & condRelErr){
+        p_prev = p;
+        p = p - (func(p)/derivada(p));
+
+        absErr = fabs(p - p_prev);
+        relErr = fabs(absErr/p);
+
+        i++;
+        condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
+        condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
+    }
+
+    raiz->iteraciones = i;
+    raiz->absErr = absErr;
+    raiz->relErr = relErr;
+    raiz->valor = p;
+    raiz->f_valor = func(p);
+
+    return raiz;
+}
+
+raiz_t *newtonRaphsonMod(raiz_t *raiz, double (*func)(double), double (*deriv1)(double), double (*deriv2)(double),
+                         const double intervalo[2], int iteraciones, double maxAbsErr, double maxRelErr) {
+    if (intervalo[0] > intervalo[1] || !raiz){
+        return NULL;
+    }
+
+    bool condAbsErr = true, condRelErr = true;
+    double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
+    int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
+    int i = 0;
+    double p = (intervalo[1] - intervalo[0])/2, p_prev;
+
+    while((i < maxIter) & condAbsErr & condRelErr){
+        p_prev = p;
+        p = p - ((func(p)*deriv1(p)) / (deriv1(p)*deriv1(p) - func(p)*deriv2(p)));
+
+        absErr = fabs(p - p_prev);
+        relErr = fabs(absErr/p);
+
+        i++;
+        condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
+        condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
+    }
+
+    raiz->iteraciones = i;
+    raiz->absErr = absErr;
+    raiz->relErr = relErr;
+    raiz->valor = p;
+    raiz->f_valor = func(p);
+
+    return raiz;
+}
+
+raiz_t *secante(raiz_t *raiz, double (*func)(double), double (*derivada)(double), const double *intervalo, int iteraciones,
+                double maxAbsErr, double maxRelErr) {
+    if (intervalo[0] > intervalo[1] || !raiz){
+        return NULL;
+    }
+
+    bool condAbsErr = true, condRelErr = true;
+    double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
+    int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
+    int i = 0;
+    double p = intervalo[0], p_prev1 = intervalo[1] , p_prev2;
+
+    while((i < maxIter) & condAbsErr & condRelErr){
+        p_prev2 =p_prev1;
+        p_prev1 = p;
+        p = p_prev1 - ((func(p_prev1)*(p_prev1 - p_prev2))/(p_prev1 - p_prev2));
+
+        absErr = fabs(p - p_prev1);
+        relErr = fabs(absErr/p);
+
+        i++;
+        condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
+        condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
+    }
+
+    raiz->iteraciones = i;
+    raiz->absErr = absErr;
+    raiz->relErr = relErr;
+    raiz->valor = p;
+    raiz->f_valor = func(p);
+
+    return raiz;
+}
+
 
 

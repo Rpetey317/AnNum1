@@ -26,7 +26,7 @@ typedef struct raiz{
  * Devuelve NULL si el intervalo es vacío
  */
 raiz_t *biseccion(raiz_t *raiz, double (*func)(double), const double intervalo[2], int iteraciones, double maxAbsErr,
-                  double maxRelErr, bool conPrint);
+                  double maxRelErr);
 
 /*
  * Busca la raíz de la funcion en el intervalo indicado por punto fijo.
@@ -36,6 +36,15 @@ raiz_t *biseccion(raiz_t *raiz, double (*func)(double), const double intervalo[2
  * Devuelve NULL si el intervalo es vacío
  */
 raiz_t *ptofijo(raiz_t *raiz, double (*func)(double), const double intervalo[2], int iteraciones, double maxAbsErr,
-                double maxRelErr, bool conPrint);
+                double maxRelErr);
+
+raiz_t *newtonRaphson(raiz_t *raiz, double (*func)(double), double (*derivada)(double), const double intervalo[2],
+                      int iteraciones, double maxAbsErr, double maxRelErr);
+
+raiz_t *newtonRaphsonMod(raiz_t *raiz, double (*func)(double), double (*deriv1)(double), double (*deriv2)(double),
+                         const double intervalo[2], int iteraciones, double maxAbsErr, double maxRelErr);
+
+raiz_t *secante(raiz_t *raiz, double (*func)(double), double (*derivada)(double), const double intervalo[2],
+                int iteraciones, double maxAbsErr, double maxRelErr);
 
 #endif //ANNUM1_ROOTFINDING_H
