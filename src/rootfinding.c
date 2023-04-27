@@ -77,17 +77,14 @@ raiz_t *ptofijo(raiz_t *raiz, double (*func)(double), const double intervalo[2],
     return raiz;
 }
 
-raiz_t *newtonRaphson(raiz_t *raiz, double (*func)(double), double (*derivada)(double), const double intervalo[2],
+raiz_t *newtonRaphson(raiz_t *raiz, double (*func)(double), double (*derivada)(double), double semilla,
                       int iteraciones, double maxAbsErr, double maxRelErr) {
-    if (intervalo[0] > intervalo[1] || !raiz){
-        return NULL;
-    }
 
     bool condAbsErr = true, condRelErr = true;
     double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
     int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
-    double p = (intervalo[1] - intervalo[0])/2, p_prev;
+    double p = semilla, p_prev;
 
     while((i < maxIter) & condAbsErr & condRelErr){
         p_prev = p;
@@ -111,16 +108,13 @@ raiz_t *newtonRaphson(raiz_t *raiz, double (*func)(double), double (*derivada)(d
 }
 
 raiz_t *newtonRaphsonMod(raiz_t *raiz, double (*func)(double), double (*deriv1)(double), double (*deriv2)(double),
-                         const double intervalo[2], int iteraciones, double maxAbsErr, double maxRelErr) {
-    if (intervalo[0] > intervalo[1] || !raiz){
-        return NULL;
-    }
+                         double semilla, int iteraciones, double maxAbsErr, double maxRelErr) {
 
     bool condAbsErr = true, condRelErr = true;
     double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
     int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
-    double p = (intervalo[1] - intervalo[0])/2, p_prev;
+    double p =  semilla, p_prev;
 
     while((i < maxIter) & condAbsErr & condRelErr){
         p_prev = p;
@@ -143,9 +137,9 @@ raiz_t *newtonRaphsonMod(raiz_t *raiz, double (*func)(double), double (*deriv1)(
     return raiz;
 }
 
-raiz_t *secante(raiz_t *raiz, double (*func)(double), double (*derivada)(double), const double *intervalo, int iteraciones,
-                double maxAbsErr, double maxRelErr) {
-    if (intervalo[0] > intervalo[1] || !raiz){
+raiz_t *secante(raiz_t *raiz, double (*func)(double), const double semillas[2], int iteraciones, double maxAbsErr,
+                double maxRelErr) {
+    if (semillas[0] > semillas[1] || !raiz){
         return NULL;
     }
 
@@ -153,7 +147,7 @@ raiz_t *secante(raiz_t *raiz, double (*func)(double), double (*derivada)(double)
     double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
     int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
-    double p = intervalo[0], p_prev1 = intervalo[1] , p_prev2;
+    double p = semillas[0], p_prev1 = semillas[1] , p_prev2;
 
     while((i < maxIter) & condAbsErr & condRelErr){
         p_prev2 =p_prev1;
