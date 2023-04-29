@@ -141,12 +141,23 @@ int main()
     error = fabs(resultado4 - resultado3);
     printf("  π = %.5f +- %.5f\n", resultado4, error);//con Leibniz
 
-
-
 /*
+
 (g) ¿Podemos afirmar que para la computadora el numero π es una constante?
+
+    El número π no puede ser representado de manera exacta en una computadora 
+    por las limitaciones de la representación númerica en el hardware y el software; 
+    las computadoras trabajan con una representación finita de números, por lo tanto, 
+    sólo puede almacenar y calcular una aproximación de pi con una cierta cantidad 
+    de dígitos.
+    En muchos lenguajes de programación se puede usar la constante "pi" para representar 
+    el número π. Sin embargo, lo que realmente se está utilizando es una aproximación 
+    con una precisión determinada, y esta puede variar según el lenguaje de programación 
+    y las bibliotecas matemáticas utilizadas. En el contexto de una computadora, el número 
+    π puede considerarse una constante, en el sentido de que su valor no cambia durante 
+    la ejecución de un programa.
+
 */
-    //...?
 
     return 0;
 }
