@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
-#include "src\rootfinding.h"
+#include "rootfinding.c"
 
 double funcion(double x){
     return 3*x*x - 20*x + 7;

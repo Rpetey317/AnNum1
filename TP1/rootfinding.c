@@ -2,11 +2,22 @@
 // Created by ruben on 20-Apr-23.
 //
 
-#include "rootfinding.h"
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <math.h>
+
+#define DEFAULT_ERR -1.0
+#define DEFAULT_IT 100000
+
+typedef struct raiz{
+    double valor;
+    double f_valor;
+    double absErr;
+    double relErr;
+    double *iteraciones;
+    size_t size_iteraciones;
+} raiz_t;
 
 raiz_t *biseccion(raiz_t *raiz, double (*func)(double), const double intervalo[2], int iteraciones, double maxAbsErr,
                   double maxRelErr) {
@@ -20,6 +31,7 @@ raiz_t *biseccion(raiz_t *raiz, double (*func)(double), const double intervalo[2
     int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
     double p = (intervalo[1] - intervalo[0])/2, p_prev, a = intervalo[0], b = intervalo[1];
+    raiz->iteraciones = calloc(iteraciones, sizeof(double));
 
     while((i < maxIter) & condAbsErr & condRelErr){
         a = (func(b)*func(p) < 0) ? p : a;
@@ -30,12 +42,13 @@ raiz_t *biseccion(raiz_t *raiz, double (*func)(double), const double intervalo[2
         absErr = fabs(p - p_prev);
         relErr = fabs(absErr/p);
 
+        raiz->iteraciones[i] = p;
         i++;
         condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
         condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
     }
 
-    raiz->iteraciones = i;
+    raiz->size_iteraciones = i;
     raiz->absErr = absErr;
     raiz->relErr = relErr;
     raiz->valor = p;
@@ -55,6 +68,7 @@ raiz_t *ptofijo(raiz_t *raiz, double (*func)(double), const double intervalo[2],
     int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
     double p = (intervalo[1] - intervalo[0])/2, p_prev;
+    raiz->iteraciones = calloc(iteraciones, sizeof(double));
 
     while((i < maxIter) & condAbsErr & condRelErr){
         p_prev = p;
@@ -63,12 +77,13 @@ raiz_t *ptofijo(raiz_t *raiz, double (*func)(double), const double intervalo[2],
         absErr = fabs(p - p_prev);
         relErr = fabs(absErr/p);
 
+        raiz->iteraciones[i] = p;
         i++;
         condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
         condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
     }
 
-    raiz->iteraciones = i;
+    raiz->size_iteraciones = i;
     raiz->absErr = absErr;
     raiz->relErr = relErr;
     raiz->valor = p;
@@ -85,6 +100,7 @@ raiz_t *newtonRaphson(raiz_t *raiz, double (*func)(double), double (*derivada)(d
     int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
     double p = semilla, p_prev;
+    raiz->iteraciones = calloc(iteraciones, sizeof(double));
 
     while((i < maxIter) & condAbsErr & condRelErr){
         p_prev = p;
@@ -93,12 +109,13 @@ raiz_t *newtonRaphson(raiz_t *raiz, double (*func)(double), double (*derivada)(d
         absErr = fabs(p - p_prev);
         relErr = fabs(absErr/p);
 
+        raiz->iteraciones[i] = p;
         i++;
         condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
         condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
     }
 
-    raiz->iteraciones = i;
+    raiz->size_iteraciones = i;
     raiz->absErr = absErr;
     raiz->relErr = relErr;
     raiz->valor = p;
@@ -115,6 +132,7 @@ raiz_t *newtonRaphsonMod(raiz_t *raiz, double (*func)(double), double (*deriv1)(
     int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
     double p =  semilla, p_prev;
+    raiz->iteraciones = calloc(iteraciones, sizeof(double));
 
     while((i < maxIter) & condAbsErr & condRelErr){
         p_prev = p;
@@ -123,12 +141,13 @@ raiz_t *newtonRaphsonMod(raiz_t *raiz, double (*func)(double), double (*deriv1)(
         absErr = fabs(p - p_prev);
         relErr = fabs(absErr/p);
 
+        raiz->iteraciones[i] = p;
         i++;
         condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
         condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
     }
 
-    raiz->iteraciones = i;
+    raiz->size_iteraciones = i;
     raiz->absErr = absErr;
     raiz->relErr = relErr;
     raiz->valor = p;
@@ -148,6 +167,7 @@ raiz_t *secante(raiz_t *raiz, double (*func)(double), const double semillas[2], 
     int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
     double p = semillas[0], p_prev1 = semillas[1] , p_prev2;
+    raiz->iteraciones = calloc(iteraciones, sizeof(double));
 
     while((i < maxIter) & condAbsErr & condRelErr){
         p_prev2 =p_prev1;
@@ -157,12 +177,13 @@ raiz_t *secante(raiz_t *raiz, double (*func)(double), const double semillas[2], 
         absErr = fabs(p - p_prev1);
         relErr = fabs(absErr/p);
 
+        raiz->iteraciones[i] = p;
         i++;
         condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
         condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
     }
 
-    raiz->iteraciones = i;
+    raiz->size_iteraciones = i;
     raiz->absErr = absErr;
     raiz->relErr = relErr;
     raiz->valor = p;
