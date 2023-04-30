@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+// Funciones a estudiar
 double f1(double x)
 {
     return x*x*x -19;

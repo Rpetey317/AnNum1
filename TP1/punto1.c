@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
 #include <stdbool.h>
 
 // En realidad el experimento tiene que hacerse 100000, puse 2 para ir viendo como funciona el codigo.
-#define CANT_EXPERIMENTO 1000
+#define CANT_EXPERIMENTO 100000
 #define CANT_DIGITOS 3
 #define MAX_NUMERO 9
 
@@ -54,35 +53,39 @@ int* generar_clave_aleatoria()
 
 */
 //Implementa el algoritmo fuerza bruta para una clave almacenada en un vector de 3 posiciones
-void algoritmo_fuerza_bruta()
+void algoritmo_fuerza_bruta(FILE *outputfile, int intento)
 {
     int* clave = generar_clave_aleatoria();
 
     printf("La clave es %i%i%i\n", clave[0], clave[1], clave[2]);
 
     int cantidad_iteraciones = 0;
-    int primer_digito = 0;
-    int segundo_digito = 0;
-    int tercer_digito = 0;
     bool encontrado = false;
+    int dig1, dig2, dig3;
 
-    for (int i = 0; i <= MAX_NUMERO && !encontrado; i++){
-        primer_digito = i;
-
-         for(int j = 0; j <= MAX_NUMERO && !encontrado; j++){
-            segundo_digito = j;
-
-             for(int k = 0; k <= MAX_NUMERO && !encontrado; k++){
-                tercer_digito = k;
+    for (int i = 0; i <= MAX_NUMERO && !encontrado; i++){;
+        dig1 = i;
+         for(int j = 0; j <= MAX_NUMERO && !encontrado; j++){;
+            dig2 = j;
+             for(int k = 0; k <= MAX_NUMERO && !encontrado; k++){;
+                dig3 = k;
                 cantidad_iteraciones++;
-
                  if(clave[0] == i && clave[1] == j && clave[2] == k)
                     encontrado = true;
              }
         }
     }
+    int respuesta[] = {dig1, dig2, dig3};
 
-	printf ("Se realizaron %i iteraciones\n", cantidad_iteraciones);
+    int i, claveint = 0, respuestaint = 0;
+    for (i = 0; i < 3; i++){
+        claveint = 10 * claveint + clave[i];
+        respuestaint = 10 * respuestaint + respuesta[i];
+    }
+
+	printf ("Se realizaron %i iteraciones\n\n", cantidad_iteraciones);
+    fprintf(outputfile,"%d;%d;%d\n", intento, claveint, respuestaint);
+
 }
 
 
@@ -93,10 +96,10 @@ hasta hallar la respuesta.
 (d) Realizar un histograma para graficar los intentos. Las columnas del histograma seran separadas en 0-10, 10-20, 20-30, etc...
 
 */
-void realizar_experimento()
+void realizar_experimento(FILE* outputfile)
 {
     for (int i = 0; i <= CANT_EXPERIMENTO; i++)
-        algoritmo_fuerza_bruta();
+        algoritmo_fuerza_bruta(outputfile, i);
 
 }
 
@@ -104,7 +107,10 @@ int main()
 {
     srand(time(NULL));
 
-    realizar_experimento();
+    FILE *outputfile = fopen(".\\fuerzabruta.csv", "w");
+    fprintf(outputfile, "#;Clave;Intentos\n");
+    realizar_experimento(outputfile);
+    fclose(outputfile);
 
     return 0;
 }
