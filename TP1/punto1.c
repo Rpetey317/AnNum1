@@ -61,30 +61,28 @@ void algoritmo_fuerza_bruta(FILE *outputfile, int intento)
 
     int cantidad_iteraciones = 0;
     bool encontrado = false;
-    int dig1, dig2, dig3;
+
 
     for (int i = 0; i <= MAX_NUMERO && !encontrado; i++){;
-        dig1 = i;
+
          for(int j = 0; j <= MAX_NUMERO && !encontrado; j++){;
-            dig2 = j;
+
              for(int k = 0; k <= MAX_NUMERO && !encontrado; k++){;
-                dig3 = k;
+
                 cantidad_iteraciones++;
                  if(clave[0] == i && clave[1] == j && clave[2] == k)
                     encontrado = true;
              }
         }
     }
-    int respuesta[] = {dig1, dig2, dig3};
 
-    int i, claveint = 0, respuestaint = 0;
-    for (i = 0; i < 3; i++){
-        claveint = 10 * claveint + clave[i];
-        respuestaint = 10 * respuestaint + respuesta[i];
+    int m, claveint = 0;
+    for (m = 0; m < 3; m++){
+        claveint = 10 * claveint + clave[m];
     }
 
 	printf ("Se realizaron %i iteraciones\n\n", cantidad_iteraciones);
-    fprintf(outputfile,"%d;%d;%d\n", intento, claveint, respuestaint);
+    fprintf(outputfile,"%d;%d;%d\n", intento, claveint, cantidad_iteraciones);
 
 }
 
