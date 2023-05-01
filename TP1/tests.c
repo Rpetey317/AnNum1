@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
-#include "rootfinding.c"
+#include "rootfinding.h"
 
 double bisect(double x){
     return 3*x*x - 20*x + 7;

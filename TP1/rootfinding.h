@@ -1,10 +1,12 @@
 //
-// Created by ruben on 20-Apr-23.
+// Created by ruben on 30-Apr-23.
 //
+
+#ifndef ANNUM1_ROOTFINDING_H
+#define ANNUM1_ROOTFINDING_H
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <math.h>
 
 #define DEFAULT_ERR -1.0
@@ -193,4 +195,4 @@ raiz_t *secante(raiz_t *raiz, double (*func)(double), const double semillas[2], 
 }
 
 
-
+#endif //ANNUM1_ROOTFINDING_H
