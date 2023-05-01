@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <math.h>
 #include "rootfinding.h"
 
@@ -63,42 +62,42 @@ int main() {
 
 
     printf("método bisección:\n");
-    printf("||p: %f||, f(p): %f, it: %d, errA: %f, errR: %f\n\n",
+    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
             raizbis->valor,
             raizbis->f_valor,
-            raizbis->iteraciones,
+            raizbis->size_iteraciones,
             raizbis->absErr,
             raizbis->relErr);
 
     printf("método pto. fijo:\n");
-    printf("||p: %f||, f(p): %f, it: %d, errA: %f, errR: %f\n\n",
+    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
            raizpf->valor,
            raizpf->f_valor,
-           raizpf->iteraciones,
+           raizpf->size_iteraciones,
            raizpf->absErr,
            raizpf->relErr);
 
     printf("método Newton-Raphson:\n");
-    printf("||p: %f||, f(p): %f, it: %d, errA: %f, errR: %f\n\n",
+    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
            raiznr->valor,
            raiznr->f_valor,
-           raiznr->iteraciones,
+           raiznr->size_iteraciones,
            raiznr->absErr,
            raiznr->relErr);
 
     printf("método secante:\n");
-    printf("||p: %f||, f(p): %f, it: %d, errA: %f, errR: %f\n\n",
+    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
            raizsec->valor,
            raizsec->f_valor,
-           raizsec->iteraciones,
+           raizsec->size_iteraciones,
            raizsec->absErr,
            raizsec->relErr);
 
     printf("método N-R Mod:\n");
-    printf("||p: %f||, f(p): %f, it: %d, errA: %f, errR: %f\n\n",
+    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
            raiznrm->valor,
            raiznrm->f_valor,
-           raiznrm->iteraciones,
+           raiznrm->size_iteraciones,
            raiznrm->absErr,
            raiznrm->relErr);
 
