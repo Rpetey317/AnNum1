@@ -44,7 +44,19 @@ double derivada2_f3(double x)
     return 64 * (-0.3915 + 2.055 * x - 2.7 * pow(x, 2) + pow(x, 3)) * exp(-4 * pow(x - 0.9, 2));
 }
 
-void estudiar_funciones(double epsilon, double (*func)(double), double (*deriv1)(double), double (*deriv2)(double)){
+void imprimir_raices(raiz_t *raiz, char* metodo)
+{
+    printf("Método %s:\n", metodo);
+    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
+            raiz->valor,
+            raiz->f_valor,
+            raiz->size_iteraciones,
+            raiz->absErr,
+            raiz->relErr);
+}
+
+void estudiar_funciones(double epsilon, double (*func)(double), double (*deriv1)(double), double (*deriv2)(double))
+{
 
     const double intervalo[] = {0.0, 3.0};
     raiz_t *raizbis = malloc(sizeof(raiz_t));
@@ -52,13 +64,7 @@ void estudiar_funciones(double epsilon, double (*func)(double), double (*deriv1)
     biseccion(raizbis, func, intervalo,
               DEFAULT_IT, epsilon, epsilon);
     
-    printf("método bisección:\n");
-    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
-            raizbis->valor,
-            raizbis->f_valor,
-            raizbis->size_iteraciones,
-            raizbis->absErr,
-            raizbis->relErr);
+    imprimir_raices(raizbis, "Biseccion");
 
     double semillanr = 0.5;
     raiz_t *raiznr = malloc(sizeof(raiz_t));
@@ -66,39 +72,21 @@ void estudiar_funciones(double epsilon, double (*func)(double), double (*deriv1)
     newtonRaphson(raiznr, func, deriv1, semillanr,
                   DEFAULT_IT, epsilon, epsilon);
 
-    printf("método Newton-Raphson:\n");
-    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
-           raiznr->valor,
-           raiznr->f_valor,
-           raiznr->size_iteraciones,
-           raiznr->absErr,
-           raiznr->relErr);
+    imprimir_raices(raiznr, "Newton-Raphson");
     
     raiz_t *raizsec = malloc(sizeof(raiz_t));
 
     secante(raizsec, func, intervalo,
             DEFAULT_IT, epsilon, epsilon);
 
-    printf("método secante:\n");
-    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
-           raizsec->valor,
-           raizsec->f_valor,
-           raizsec->size_iteraciones,
-           raizsec->absErr,
-           raizsec->relErr);
+    imprimir_raices(raizsec, "Secante");
 
     raiz_t *raiznrm = malloc(sizeof(raiz_t));
 
     newtonRaphsonMod(raiznrm, func, deriv1, deriv2, semillanr,
                      DEFAULT_IT, epsilon, epsilon);
 
-    printf("método N-R Mod:\n");
-    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
-           raiznrm->valor,
-           raiznrm->f_valor,
-           raiznrm->size_iteraciones,
-           raiznrm->absErr,
-           raiznrm->relErr);
+    imprimir_raices(raiznrm, "N-R Mod");
 
     free(raizbis);
     free(raiznr);
@@ -112,8 +100,11 @@ int main(){
     double primer_criterio_parada = 1e-5;
     double segundo_criterio_parada = 1e-13;
 
+    printf("===F1===\n\n");
     estudiar_funciones(primer_criterio_parada, f1, derivada_f1, derivada2_f1);
+    printf("===F2===\n\n");
     estudiar_funciones(primer_criterio_parada, f2, derivada_f2, derivada2_f2);
+    printf("===F3===\n\n");
     estudiar_funciones(primer_criterio_parada, f3, derivada_f3, derivada2_f3);
 
     return 0;
