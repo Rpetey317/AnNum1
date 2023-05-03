@@ -1,134 +1,120 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "rootfinding.h"
 
 // Funciones a estudiar
 double f1(double x)
 {
-    return x*x*x -19;
+    return (x*x*x -19);
 }
 double derivada_f1(double x)
 {
-    return 3*x*x;
+    return (3*x*x);
 }
 double derivada2_f1(double x)
 {
-    return 6*x;
+    return (6*x);
 }
 
 double f2(double x)
 {
-    return pow(x, 5) - (7.3)*pow(x, 4) + (2.24)*pow(x, 3) + (30.106)*pow(x, 2) - (42.1)*x + 15.94;
+    return (pow(x, 5) - (7.3)*pow(x, 4) + (2.24)*pow(x, 3) + (30.106)*pow(x, 2) - (42.1)*x + 15.94);
 }
 double derivada_f2(double x)
 {
-    return 5*pow(x, 4) - 29.2*pow(x, 3) + 6.72*pow(x, 2) + 60.212*x - 42.1;
+    return (5*pow(x, 4) - 29.2*pow(x, 3) + 6.72*pow(x, 2) + 60.212*x - 42.1);
 }
 double derivada2_f2(double x)
 {
-    return 20*pow(x, 3) - 87.6*pow(x, 2) + 13.44*x + 60.212;;
+    return (20*pow(x, 3) - 87.6*pow(x, 2) + 13.44*x + 60.212);
 }
 
 double f3(double x)
 {
-    return (x-0.9)* pow(M_E, -4*(x-0.9)*(x-0.9));
+    return (x - 0.9) * exp(-4 * pow(x - 0.9, 2));
 }
+
 double derivada_f3(double x)
 {
-    return (((-8)*x + 7.2)*(x-0.9)) * pow(M_E, -4*(x-0.9)*(x-0.9));
+    return ((-8 * x + 7.2) * (x - 0.9) + 1) * exp(-4 * pow(x - 0.9, 2));
 }
 double derivada2_f3(double x)
 {
-    return 64*(-0.3915 + 2.055*x - 2.7*pow(x, 2) + pow(x, 3)) * pow(M_E, -4*(x-0.9)*(x-0.9));
+    return 64 * (-0.3915 + 2.055 * x - 2.7 * pow(x, 2) + pow(x, 3)) * exp(-4 * pow(x - 0.9, 2));
 }
 
-/*
+void estudiar_funciones(double epsilon, double (*func)(double), double (*deriv1)(double), double (*deriv2)(double)){
 
-Defino esta funcion g para poder aplicar el algoritmo de punto fijo.
-Lo que hice fue despejar x de la ecuacion x^3−19, y luego verificar si 
-esta cumple con los teoremas del punto fijo (si se mapea sobre si misma
-y si la derivada esta acotada entre 0 y 1)
-... Pero no cumple :p estoy en eso
+    const double intervalo[] = {0.0, 3.0};
+    raiz_t *raizbis = malloc(sizeof(raiz_t));
 
-*/
-double g(double x) {
-    return pow(19, 1.0/3.0);
+    biseccion(raizbis, func, intervalo,
+              DEFAULT_IT, epsilon, epsilon);
+    
+    printf("método bisección:\n");
+    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
+            raizbis->valor,
+            raizbis->f_valor,
+            raizbis->size_iteraciones,
+            raizbis->absErr,
+            raizbis->relErr);
+
+    double semillanr = 0.5;
+    raiz_t *raiznr = malloc(sizeof(raiz_t));
+
+    newtonRaphson(raiznr, func, deriv1, semillanr,
+                  DEFAULT_IT, epsilon, epsilon);
+
+    printf("método Newton-Raphson:\n");
+    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
+           raiznr->valor,
+           raiznr->f_valor,
+           raiznr->size_iteraciones,
+           raiznr->absErr,
+           raiznr->relErr);
+    
+    raiz_t *raizsec = malloc(sizeof(raiz_t));
+
+    secante(raizsec, func, intervalo,
+            DEFAULT_IT, epsilon, epsilon);
+
+    printf("método secante:\n");
+    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
+           raizsec->valor,
+           raizsec->f_valor,
+           raizsec->size_iteraciones,
+           raizsec->absErr,
+           raizsec->relErr);
+
+    raiz_t *raiznrm = malloc(sizeof(raiz_t));
+
+    newtonRaphsonMod(raiznrm, func, deriv1, deriv2, semillanr,
+                     DEFAULT_IT, epsilon, epsilon);
+
+    printf("método N-R Mod:\n");
+    printf("||p: %f||, f(p): %f, it: %ld, errA: %f, errR: %f\n\n",
+           raiznrm->valor,
+           raiznrm->f_valor,
+           raiznrm->size_iteraciones,
+           raiznrm->absErr,
+           raiznrm->relErr);
+
+    free(raizbis);
+    free(raiznr);
+    free(raizsec);
+    free(raiznrm);
+
 }
-
-double metodo_biseccion(double a, double b, double epsilon, int* iteraciones)
-{
-    double p;
-
-    while ((b-a) >= epsilon){
-        p = (a + b) / 2;
-
-        if (f1(p) == 0.0)
-            break;
-        
-        if (f1(p) * f1(a) < 0)
-            b = p;
-        else
-            a = p;
-        
-        (*iteraciones)++;
-    }
-
-    return p;
-}
-
-double metodo_punto_fijo(double semilla, double epsilon, int max_iteraciones) {
-    double p0 = semilla;
-    double p;
-/*
-    for(int i = 0; i < max_iteraciones; i++){
-        p = g(p0);
-
-        if ((fabs(p - p0) < epsilon))
-            break;
-
-        p0 = p;
-    }
- */
-
-    int i = 1;
-
-    while (i <= max_iteraciones){
-        p = g(p0);
-        if (fabs(p - p0) < epsilon)
-            return p;
-        
-        i++;
-        p0 = p;
-    }
-
-    return p0;
-}
-
-
 
 int main(){
 
-    double a = 0.0, b = 3.0, epsilon = 1e-5;
-    int iteraciones = 0;
-    double raiz_biseccion = metodo_biseccion(a, b, epsilon, &iteraciones);
+    double primer_criterio_parada = 1e-5;
+    double segundo_criterio_parada = 1e-13;
 
-    printf("== METODO BISECCION F1 ==\n");
-
-    printf("La raíz aproximada es: %lf\n"
-            "Se realizaron %i iteraciones\n", raiz_biseccion, iteraciones);
-    
-
-    /*
-    double p0 = (b-a) / 2;
-    double K = 1;
-    int max_iteraciones = log(K / epsilon) / log(fabs(g(b) - g(a)));
-
-    printf("== METODO PUNTO FIJO F1 ==\n");
-
-    //double raiz_pto_fijo = metodo_punto_fijo(p0, epsilon, )
-    */
-
+    estudiar_funciones(primer_criterio_parada, f1, derivada_f1, derivada2_f1);
+    estudiar_funciones(primer_criterio_parada, f2, derivada_f2, derivada2_f2);
+    estudiar_funciones(primer_criterio_parada, f3, derivada_f3, derivada2_f3);
 
     return 0;
 }
