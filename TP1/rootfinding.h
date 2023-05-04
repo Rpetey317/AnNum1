@@ -1,7 +1,3 @@
-//
-// Created by ruben on 30-Apr-23.
-//
-
 #ifndef ANNUM1_ROOTFINDING_H
 #define ANNUM1_ROOTFINDING_H
 
@@ -21,6 +17,69 @@ typedef struct raiz{
     size_t size_iteraciones;
 } raiz_t;
 
+/*====================================================*/
+// analisis de convergencia
+double getAlpha(raiz_t *raiz, size_t indice)
+{
+    if(indice == 0 || indice == 1 || indice >= raiz->size_iteraciones - 1){
+        return 0;
+    }
+
+    double x_np1, x_n, x_nm1, x_nm2;
+    x_np1 = raiz->iteraciones[indice+1];
+    x_n = raiz->iteraciones[indice];
+    x_nm1 = raiz->iteraciones[indice-1];
+    x_nm2 = raiz->iteraciones[indice-2];
+
+    double numerador = log(fabs((x_np1 - x_n) / (x_n - x_nm1)));
+    double denominador = log(fabs((x_n - x_nm1) / (x_nm1 - x_nm2)));
+
+    return numerador / denominador;
+}
+
+double getLambda(raiz_t *raiz, size_t indice, double alpha)
+{
+    if(indice == 0 || indice == 1 || indice >= raiz->size_iteraciones - 1){
+        return 0;
+    }
+
+    double x_np1, x_n, x_nm1, x_nm2;
+    x_np1 = raiz->iteraciones[indice+1];
+    x_n = raiz->iteraciones[indice];
+    x_nm1 = raiz->iteraciones[indice-1];
+
+    return (fabs(x_np1 - x_n)) / (pow(fabs(x_n - x_nm1), alpha));
+}
+
+void escribirRaizAArchivo(raiz_t *raiz, double x_real, char* filename)
+{
+    FILE *file = fopen(filename, "w");
+    fprintf(file,
+            "n;x_n;|x_n - x_n-1|;log(|x_n - x_n-1|);|x_n - x_r|;log(|x_n - x_r|);alpha;lambda\n");
+    double alpha, lambda, itErr, absErr;
+
+    for (int i = 0; i < raiz->size_iteraciones; i++) {
+        alpha = getAlpha(raiz, i);
+        lambda = getLambda(raiz, i, alpha);
+        itErr = (i == 0 ? 0 : raiz->iteraciones[i] - raiz->iteraciones[i - 1]);
+        absErr = fabs(raiz->iteraciones[i] - x_real);
+
+        fprintf(file, "%d;%g;%g;%g;%g;%g;%g;%g\n",
+                i+1,
+                raiz->iteraciones[i],
+                fabs(itErr),
+                log10(fabs(itErr)),
+                fabs(absErr),
+                log10(fabs(absErr)),
+                alpha,
+                lambda);
+    }
+
+    fclose(file);
+}
+
+/*====================================================*/
+// buúsqueda de raicíes
 raiz_t *biseccion(raiz_t *raiz, double (*func)(double), const double intervalo[2], int iteraciones, double maxAbsErr,
                   double maxRelErr) {
 
