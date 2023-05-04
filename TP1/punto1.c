@@ -3,7 +3,6 @@
 #include <time.h>
 #include <stdbool.h>
 
-// En realidad el experimento tiene que hacerse 100000, puse 2 para ir viendo como funciona el codigo.
 #define CANT_EXPERIMENTO 100000
 #define CANT_DIGITOS 3
 #define MAX_NUMERO 9
@@ -105,7 +104,7 @@ int main()
 {
     srand(time(NULL));
 
-    FILE *outputfile = fopen(".\\fuerzabruta.csv", "w");
+    FILE *outputfile = fopen("output/fuerzabruta.csv", "w");
     fprintf(outputfile, "#;Clave;Intentos\n");
     realizar_experimento(outputfile);
     fclose(outputfile);

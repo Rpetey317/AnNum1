@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include "rootfinding.h"
 
 #define MAX_ITERACIONES 50
 #define TOLERANCIA_MAXIMA 1e-15 // 1* 10^(-15)
@@ -58,15 +59,13 @@ double serie_de_Leibniz(int n)
     { 
         resultado += (pow(-1, i) / (2*i +1));
     }
-    return resultado;
+    return resultado * 4.0;
 }
+
 double calcular_PI_con_Leibniz() {
     double resultado = 4 * serie_de_Leibniz(500);
     return resultado;
 }
-
-
-
 
 int main() 
 {
@@ -82,13 +81,13 @@ int main()
     float tolerancia = 1e-7;
     int iteraciones = 0;
     float resultado1 = metodo_Newton_Raphson(funcion, derivada, semilla, tolerancia, &iteraciones);
-    printf("el resultado con Newton-Raphson en %i iteraciones fue: %.7f +- 1e-7\n", iteraciones, resultado1);
+    printf("El resultado con Newton-Raphson en %i iteraciones fue: %.7f +- 1e-7\n", iteraciones, resultado1);
 
-    printf("usando la serie de Leibniz:\n");
+    printf("Usando la serie de Leibniz:\n");
     double resultado2;
     for (int i = 10; i <= 100000; i*=10) {
-        resultado2 = 4 * serie_de_Leibniz(i);
-        printf("n=%i => el resultado fue: %.7f\n", i, resultado2);
+        resultado2 = serie_de_Leibniz(i);
+        printf("Para n=%i => el resultado fue: %.7f\n", i, resultado2);
     }
     
 
@@ -98,8 +97,7 @@ int main()
     punto flotante de 64 bits y comparar las respuestas obtenidas con
     n = 10, n = 100, n = 1000, n = 10000 y n = 100000.
 */
-    printf("\n\n(D) PUNTO FLOTANTE 64 BITS\n");
-    printf("----------------------------\n");
+    printf("\n\n==========(D) PUNTO FLOTANTE 64 BITS==========\n\n");
 
     double semilla2 = 2;
     double tolerancia2 = 1e-15;
