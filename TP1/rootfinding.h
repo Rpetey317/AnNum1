@@ -6,11 +6,11 @@
 #include <math.h>
 
 #define DEFAULT_ERR -1.0
-#define DEFAULT_IT 100000
+#define DEFAULT_IT 1000
 
 typedef struct raiz{
     double valor;
-    double f_valor;
+    //double f_valor;
     double absErr;
     double relErr;
     double *iteraciones;
@@ -53,6 +53,8 @@ double getLambda(raiz_t *raiz, size_t indice, double alpha)
 
 void escribirRaizAArchivo(raiz_t *raiz, double x_real, char* filename)
 {
+    if (!raiz)
+        return;
     FILE *file = fopen(filename, "w");
     fprintf(file,
             "n;x_n;|x_n - x_n-1|;log(|x_n - x_n-1|);|x_n - x_r|;log(|x_n - x_r|);alpha;lambda\n");
@@ -61,13 +63,14 @@ void escribirRaizAArchivo(raiz_t *raiz, double x_real, char* filename)
     for (int i = 0; i < raiz->size_iteraciones; i++) {
         alpha = getAlpha(raiz, i);
         lambda = getLambda(raiz, i, alpha);
-        itErr = (i == 0 ? 0 : raiz->iteraciones[i] - raiz->iteraciones[i - 1]);
+        //itErr = (i == 0 ? 0 : raiz->iteraciones[i] - raiz->iteraciones[i - 1]);
         absErr = fabs(raiz->iteraciones[i] - x_real);
 
         fprintf(file, "%d;%g;%g;%g;%g;%g;%g;%g\n",
                 i+1,
                 raiz->iteraciones[i],
-                fabs(itErr),
+                //fabs(itErr),
+                raiz->absErr,
                 log10(fabs(itErr)),
                 fabs(absErr),
                 log10(fabs(absErr)),
@@ -78,23 +81,25 @@ void escribirRaizAArchivo(raiz_t *raiz, double x_real, char* filename)
     fclose(file);
 }
 
+
 /*====================================================*/
 // buúsqueda de raicíes
-raiz_t *biseccion(raiz_t *raiz, double (*func)(double), const double intervalo[2], int iteraciones, double maxAbsErr,
-                  double maxRelErr) {
-
+raiz_t *biseccion(raiz_t *raiz, double (*func)(double), 
+                  const double intervalo[2], double maxAbsErr) 
+{
     if (intervalo[0] > intervalo[1] || !raiz){
         return NULL;
     }
 
-    bool condAbsErr = true, condRelErr = true;
+    //bool condAbsErr = true, condRelErr = true;
     double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
-    int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
+    //int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
     double p = (intervalo[1] - intervalo[0])/2, p_prev, a = intervalo[0], b = intervalo[1];
-    raiz->iteraciones = calloc(iteraciones, sizeof(double));
+    raiz->iteraciones = calloc(DEFAULT_IT, sizeof(double));
 
-    while((i < maxIter) & condAbsErr & condRelErr){
+    //while((i < maxIter) & condAbsErr & condRelErr){
+    do {
         a = (func(b)*func(p) < 0) ? p : a;
         b = (func(a)*func(p) < 0) ? p : b;
         p_prev = p;
@@ -105,33 +110,36 @@ raiz_t *biseccion(raiz_t *raiz, double (*func)(double), const double intervalo[2
 
         raiz->iteraciones[i] = p;
         i++;
-        condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
-        condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
-    }
+        if (i > DEFAULT_IT)//no convergió
+            return NULL;
+        //condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
+        //condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
+    } while (absErr > maxAbsErr);
 
     raiz->size_iteraciones = i;
     raiz->absErr = absErr;
     raiz->relErr = relErr;
     raiz->valor = p;
-    raiz->f_valor = func(p);
 
     return raiz;
 }
 
-raiz_t *ptofijo(raiz_t *raiz, double (*func)(double), const double intervalo[2], int iteraciones, double maxAbsErr,
-                double maxRelErr) {
+raiz_t *ptofijo(raiz_t *raiz, double (*func)(double), const double intervalo[2], 
+                double maxAbsErr) 
+{
     if (intervalo[0] > intervalo[1] || !raiz){
         return NULL;
     }
 
-    bool condAbsErr = true, condRelErr = true;
+    //bool condAbsErr = true, condRelErr = true;
     double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
-    int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
+    //int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
     double p = (intervalo[1] - intervalo[0])/2, p_prev;
-    raiz->iteraciones = calloc(iteraciones, sizeof(double));
+    raiz->iteraciones = calloc(DEFAULT_IT, sizeof(double));
 
-    while((i < maxIter) & condAbsErr & condRelErr){
+    //while((i < maxIter) & condAbsErr & condRelErr){
+    do {
         p_prev = p;
         p = p - func(p);
 
@@ -140,30 +148,34 @@ raiz_t *ptofijo(raiz_t *raiz, double (*func)(double), const double intervalo[2],
 
         raiz->iteraciones[i] = p;
         i++;
-        condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
-        condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
-    }
+        if (i > DEFAULT_IT)//no convergió
+            return NULL;
+        
+            
+        //condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;//esto nose si se puede sacar 
+        //condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
+    } while(absErr > maxAbsErr);
 
     raiz->size_iteraciones = i;
     raiz->absErr = absErr;
     raiz->relErr = relErr;
     raiz->valor = p;
-    raiz->f_valor = func(p);
 
     return raiz;
 }
 
 raiz_t *newtonRaphson(raiz_t *raiz, double (*func)(double), double (*derivada)(double), double semilla,
-                      int iteraciones, double maxAbsErr, double maxRelErr) {
+                      double maxAbsErr) {
 
     bool condAbsErr = true, condRelErr = true;
     double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
-    int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
+    //int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
     double p = semilla, p_prev;
-    raiz->iteraciones = calloc(iteraciones, sizeof(double));
+    raiz->iteraciones = calloc(DEFAULT_IT, sizeof(double));
 
-    while((i < maxIter) & condAbsErr & condRelErr){
+    //while((i < maxIter) & condAbsErr & condRelErr){
+    do {
         p_prev = p;
         p = p - (func(p)/derivada(p));
 
@@ -172,30 +184,32 @@ raiz_t *newtonRaphson(raiz_t *raiz, double (*func)(double), double (*derivada)(d
 
         raiz->iteraciones[i] = p;
         i++;
-        condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
-        condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
-    }
+        if (i > DEFAULT_IT)//no convergió
+            return NULL;
+        //condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
+        //condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
+    } while (absErr > maxAbsErr);
 
     raiz->size_iteraciones = i;
     raiz->absErr = absErr;
     raiz->relErr = relErr;
     raiz->valor = p;
-    raiz->f_valor = func(p);
 
     return raiz;
 }
 
 raiz_t *newtonRaphsonMod(raiz_t *raiz, double (*func)(double), double (*deriv1)(double), double (*deriv2)(double),
-                         double semilla, int iteraciones, double maxAbsErr, double maxRelErr) {
-
-    bool condAbsErr = true, condRelErr = true;
+                         double semilla, double maxAbsErr) 
+{
+    //bool condAbsErr = true, condRelErr = true;
     double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
-    int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
+    //int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
     double p =  semilla, p_prev;
-    raiz->iteraciones = calloc(iteraciones, sizeof(double));
+    raiz->iteraciones = calloc(DEFAULT_IT, sizeof(double));
 
-    while((i < maxIter) & condAbsErr & condRelErr){
+    //while((i < maxIter) & condAbsErr & condRelErr){
+    do {
         p_prev = p;
         p = p - ((func(p)*deriv1(p)) / (deriv1(p)*deriv1(p) - func(p)*deriv2(p)));
 
@@ -204,33 +218,36 @@ raiz_t *newtonRaphsonMod(raiz_t *raiz, double (*func)(double), double (*deriv1)(
 
         raiz->iteraciones[i] = p;
         i++;
-        condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
-        condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
-    }
-
+        if (i > DEFAULT_IT)//no convergió
+            return NULL;
+        //condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
+        //condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
+    } while (absErr > maxAbsErr);
+    
     raiz->size_iteraciones = i;
     raiz->absErr = absErr;
     raiz->relErr = relErr;
     raiz->valor = p;
-    raiz->f_valor = func(p);
 
     return raiz;
 }
 
-raiz_t *secante(raiz_t *raiz, double (*func)(double), const double semillas[2], int iteraciones, double maxAbsErr,
-                double maxRelErr) {
+raiz_t *secante(raiz_t *raiz, double (*func)(double), const double semillas[2], 
+                double maxAbsErr) 
+{
     if (semillas[0] > semillas[1] || !raiz){
         return NULL;
     }
 
-    bool condAbsErr = true, condRelErr = true;
+    //bool condAbsErr = true, condRelErr = true;
     double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
-    int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
+    //int maxIter = (iteraciones < DEFAULT_IT) ? iteraciones : DEFAULT_IT;
     int i = 0;
     double p = semillas[0], p_prev1 = semillas[1] , p_prev2;
-    raiz->iteraciones = calloc(iteraciones, sizeof(double));
+    raiz->iteraciones = calloc(DEFAULT_IT, sizeof(double));
 
-    while((i < maxIter) & condAbsErr & condRelErr){
+    //while((i < maxIter) & condAbsErr & condRelErr){
+    do {
         p_prev2 =p_prev1;
         p_prev1 = p;
         p = p_prev1 - ((func(p_prev1)*(p_prev1 - p_prev2))/(p_prev1 - p_prev2));
@@ -240,15 +257,14 @@ raiz_t *secante(raiz_t *raiz, double (*func)(double), const double semillas[2], 
 
         raiz->iteraciones[i] = p;
         i++;
-        condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
-        condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
-    }
+        //condAbsErr = (maxAbsErr == DEFAULT_ERR) ? true : absErr > maxAbsErr;
+        //condRelErr = (maxRelErr == DEFAULT_ERR) ? true : relErr > maxRelErr;
+    } while(absErr > maxAbsErr);
 
     raiz->size_iteraciones = i;
     raiz->absErr = absErr;
     raiz->relErr = relErr;
     raiz->valor = p;
-    raiz->f_valor = func(p);
 
     return raiz;
 }

@@ -30,7 +30,7 @@ double metodo_Newton_Raphson(double (*funcion)(double), double (*derivada)(doubl
             printf("hubo un error, el metodo no convergió\n");
             return x;
         }
-    } while (fabs(funcion(x) - funcion(x_anterior)) > tolerancia);
+    } while (fabs(x - x_anterior) > tolerancia);
     
     return x;
 }

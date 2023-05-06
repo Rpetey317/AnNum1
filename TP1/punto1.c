@@ -62,14 +62,11 @@ void algoritmo_fuerza_bruta(FILE *outputfile, int intento)
     bool encontrado = false;
 
 
-    for (int i = 0; i <= MAX_NUMERO && !encontrado; i++){;
-
-         for(int j = 0; j <= MAX_NUMERO && !encontrado; j++){;
-
-             for(int k = 0; k <= MAX_NUMERO && !encontrado; k++){;
-
+    for (int i = 0; i <= MAX_NUMERO && !encontrado; i++) {
+         for(int j = 0; j <= MAX_NUMERO && !encontrado; j++) {
+             for(int k = 0; k <= MAX_NUMERO && !encontrado; k++) {
                 cantidad_iteraciones++;
-                 if(clave[0] == i && clave[1] == j && clave[2] == k)
+                if(clave[0] == i && clave[1] == j && clave[2] == k)
                     encontrado = true;
              }
         }
