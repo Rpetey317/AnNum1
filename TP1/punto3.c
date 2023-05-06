@@ -104,7 +104,7 @@ void estudiar_funciones(double tolerancia, double (*f)(double), double (*deriv1)
     strcpy(filename, prefix);
     strcat(filename, "newtonraphson.csv");
     escribirRaizAArchivo(raiznr, x_real, filename);
-    
+     
     //Secantes
     raiz_t *raizsec = malloc(sizeof(raiz_t));
     secante(raizsec, f, intervalo, tolerancia);
@@ -171,6 +171,8 @@ int main(){
     printf("===F3===\n\n");
     estudiar_funciones(tolerancia2, f3, derivada_f3,
                        derivada2_f3, g3, x_real_f3, "output/f3-10e-13_", intervalo, semillanrf3);
+
+
 
     return 0;
 }
