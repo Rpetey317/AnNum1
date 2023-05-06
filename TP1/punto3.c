@@ -49,13 +49,15 @@ double g1(double x)
 {
     return f1(x)/27.0;
 }
+
 double g2(double x)
 {
-    return f2(x);
+    return x - f2(x)/derivada_f2(0.5);
 }
+
 double g3(double x)
 {
-    return f3(x);
+    return f3(x)/0.9;
 }
 
 void imprimir_raices(raiz_t *raiz, char* metodo)
@@ -70,11 +72,8 @@ void imprimir_raices(raiz_t *raiz, char* metodo)
 }
 
 void estudiar_funciones(double tolerancia, double (*f)(double), double (*deriv1)(double), double (*deriv2)(double),
-                        double (*gx)(double), double x_real, const char *prefix)
+                        double (*gx)(double), double x_real, const char *prefix, const double *intervalo, double semillanr)
 {
-
-    const double intervalo[] = {0.0, 3.0};
-    double semillanr = 0.5;
     int strsize = 40;
     char *filename = calloc(strsize, sizeof(char));
 
@@ -89,8 +88,8 @@ void estudiar_funciones(double tolerancia, double (*f)(double), double (*deriv1)
 
     //Punto fijo
     raiz_t *raizpf = malloc(sizeof(raiz_t));
-    ptofijo(raizbis, gx, intervalo, tolerancia);
-    imprimir_raices(raizbis, "Punto Fijo");
+    ptofijo(raizpf, gx, intervalo, tolerancia);
+    imprimir_raices(raizpf, "Punto Fijo");
     memset(filename, '\0', sizeof(strsize));
     strcpy(filename, prefix);
     strcat(filename, "ptofijo.csv");
@@ -138,6 +137,11 @@ int main(){
     double x_real_f1 = cbrt(19.0);//raiz cubica de 19
     double x_real_f2 = 0.804989; //de WolframAlpha
     double x_real_f3 = 0.9;
+    
+    const double intervalo[] = {0.0, 3.0};
+    const double intervalof2[] = {0.2, 0.9};
+    double semillanr = 0.5;
+    double semillanrf3 = 1.0;
 
     printf("==================================================\n");
     printf("==============PRIMER CRITERIO: 1E-5==============\n");
@@ -145,13 +149,13 @@ int main(){
 
     printf("===F1===\n\n");
     estudiar_funciones(tolerancia1, f1, derivada_f1,
-                       derivada2_f1, g1, x_real_f1, "output/f1-10e-05_");
+                       derivada2_f1, g1, x_real_f1, "output/f1-10e-05_", intervalo, semillanr);
     printf("===F2===\n\n");
     estudiar_funciones(tolerancia1, f2, derivada_f2,
-                       derivada2_f2, g2, x_real_f2, "output/f2-10e-05_");
+                       derivada2_f2, g2, x_real_f2, "output/f2-10e-05_", intervalof2, semillanr);
     printf("===F3===\n\n");
     estudiar_funciones(tolerancia1, f3, derivada_f3,
-                       derivada2_f3, g3, x_real_f3, "output/f3-10e-05_");
+                       derivada2_f3, g3, x_real_f3, "output/f3-10e-05_", intervalo, semillanrf3);
 
     printf("==================================================\n");
     printf("=============SEGUNDO CRITERIO: 10E-13=============\n");
@@ -159,13 +163,13 @@ int main(){
 
     printf("===F1===\n\n");
     estudiar_funciones(tolerancia2, f1, derivada_f1,
-                       derivada2_f1, g1, x_real_f1, "output/f1-10e-13_");
+                       derivada2_f1, g1, x_real_f1, "output/f1-10e-13_", intervalo, semillanr);
     printf("===F2===\n\n");
     estudiar_funciones(tolerancia2, f2, derivada_f2,
-                       derivada2_f2, g2, x_real_f2, "output/f2-10e-13_");
+                       derivada2_f2, g2, x_real_f2, "output/f2-10e-13_", intervalof2, semillanr);
     printf("===F3===\n\n");
     estudiar_funciones(tolerancia2, f3, derivada_f3,
-                       derivada2_f3, g3, x_real_f3, "output/f3-10e-13_");
+                       derivada2_f3, g3, x_real_f3, "output/f3-10e-13_", intervalo, semillanrf3);
 
     return 0;
 }
