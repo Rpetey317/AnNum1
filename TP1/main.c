@@ -32,16 +32,14 @@ int main() {
     raiz_t *raizbis = malloc(sizeof(raiz_t));
     raiz_t *raizpf = malloc(sizeof(raiz_t));
 
-    biseccion(raizbis, funcion, intervalo1,
-              10, DEFAULT_ERR, DEFAULT_ERR);
+    biseccion(raizbis, funcion, intervalo1, 10);
 
-    ptofijo(raizpf, otrafuncion, intervalo2,
-              10, DEFAULT_ERR, DEFAULT_ERR);
+    ptofijo(raizpf, otrafuncion, intervalo2,10);
 
     printf("método bisección:\n");
     printf("||p: %f||, f(p): %f, it: %d, errA: %f, errR: %f\n\n",
             raizbis->valor,
-            raizbis->f_valor,
+            //raizbis->f_valor,
             raizbis->iteraciones,
             raizbis->absErr,
             raizbis->relErr);
@@ -49,7 +47,7 @@ int main() {
     printf("método pto. fijo:\n");
     printf("||p: %f||, f(p): %f, it: %d, errA: %f, errR: %f\n\n",
            raizpf->valor,
-           raizpf->f_valor,
+           //raizpf->f_valor,
            raizpf->iteraciones,
            raizpf->absErr,
            raizpf->relErr);

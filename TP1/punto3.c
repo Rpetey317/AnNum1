@@ -47,17 +47,17 @@ double derivada2_f3(double x)
 // funciones modificadas para pto fijo
 double g1(double x)
 {
-    return f1(x)/27.0;
+    return x- f1(x)/27.0;
 }
 
 double g2(double x)
 {
-    return x - f2(x)/derivada_f2(0.5);
+    return x - f2(x)/ (-42.1);
 }
 
 double g3(double x)
 {
-    return f3(x)/0.9;
+    return x - f3(x)/0.9;
 }
 
 void imprimir_raices(raiz_t *raiz, char* metodo)
@@ -76,6 +76,7 @@ void estudiar_funciones(double tolerancia, double (*f)(double), double (*deriv1)
 {
     int strsize = 40;
     char *filename = calloc(strsize, sizeof(char));
+    double semilla = 0.5;
 
     //bissección
     raiz_t *raizbis = malloc(sizeof(raiz_t));
@@ -88,7 +89,7 @@ void estudiar_funciones(double tolerancia, double (*f)(double), double (*deriv1)
 
     //Punto fijo
     raiz_t *raizpf = malloc(sizeof(raiz_t));
-    ptofijo(raizpf, gx, intervalo, tolerancia);
+    ptofijo(raizpf, gx, semilla, tolerancia);
     imprimir_raices(raizpf, "Punto Fijo");
     memset(filename, '\0', sizeof(strsize));
     strcpy(filename, prefix);
