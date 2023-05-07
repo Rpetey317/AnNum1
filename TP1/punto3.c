@@ -87,9 +87,11 @@ void estudiar_funciones(double tolerancia, double (*f)(double), double (*deriv1)
     strcat(filename, "biseccion.csv");
     escribirRaizAArchivo(raizbis, x_real, filename);
 
+    double seed = raizbis->iteraciones[1];
+
     //Punto fijo
     raiz_t *raizpf = malloc(sizeof(raiz_t));
-    ptofijo(raizpf, gx, semilla, tolerancia);
+    ptofijo(raizpf, gx, seed, tolerancia);
     imprimir_raices(raizpf, "Punto Fijo");
     memset(filename, '\0', sizeof(strsize));
     strcpy(filename, prefix);
@@ -106,8 +108,10 @@ void estudiar_funciones(double tolerancia, double (*f)(double), double (*deriv1)
     escribirRaizAArchivo(raiznr, x_real, filename);
      
     //Secantes
+    double secseeds[] = {raizbis->iteraciones[1], raizbis->iteraciones[2]};
+
     raiz_t *raizsec = malloc(sizeof(raiz_t));
-    secante(raizsec, f, intervalo, tolerancia);
+    secante(raizsec, f, secseeds, tolerancia);
     imprimir_raices(raizsec, "Secante");
     memset(filename, '\0', sizeof(strsize));
     strcpy(filename, prefix);
@@ -135,7 +139,7 @@ int main(){
 
     double tolerancia1 = 1e-5;
     double tolerancia2 = 1e-13;
-    double x_real_f1 = cbrt(19.0);//raiz cubica de 19
+    double x_real_f1 = cbrt(19.0);
     double x_real_f2 = 0.804989; //de WolframAlpha
     double x_real_f3 = 0.9;
     
