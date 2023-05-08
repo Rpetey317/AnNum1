@@ -66,7 +66,7 @@ void escribirRaizAArchivo(raiz_t *raiz, double x_real, char* filename)
         itErr = (i == 0 ? 0 : raiz->iteraciones[i] - raiz->iteraciones[i - 1]);
         absErr = fabs(raiz->iteraciones[i] - x_real);
 
-        fprintf(file, "%d;%gf;%gf;%gf;%gf;%gf;%gf;%gf\n",
+        fprintf(file, "%d;%.15ff;%.15ff;%.15ff;%.15ff;%.15ff;%.15ff;%.15ff\n",
                 i+1,
                 raiz->iteraciones[i],
                 fabs(itErr),
@@ -125,7 +125,6 @@ raiz_t *ptofijo(raiz_t *raiz, double (*g)(double), double semilla,
     double p_prev;
     do {
         p_prev = p;
-        //p = p - f(p);
         p = g(p_prev);
 
         absErr = fabs(p - p_prev);
