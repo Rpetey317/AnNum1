@@ -133,6 +133,36 @@ void estudiar_funciones(double tolerancia, double (*f)(double), double (*deriv1)
     free(filename);
 }
 
+void analisis_adicional()
+{
+    double intervalo[] = {0.0, 3.0};
+
+    raiz_t *raizbis = malloc(sizeof(raiz_t));
+    biseccion(raizbis, f1, intervalo, 1e-5);
+    double seed = raizbis->iteraciones[3];
+
+    raiz_t *raiznr = malloc(sizeof(raiz_t));
+    newtonRaphson(raiznr, f1, derivada_f1, seed, 1e-13);
+    escribirRaizAArchivo(raiznr, cbrt(19.0), "output/extra_newRaph_f1_conBisDeArranque.csv");
+
+
+    biseccion(raizbis, f2, intervalo, 1e-5);
+    seed = raizbis->iteraciones[3];
+
+    newtonRaphson(raiznr, f2, derivada_f2, seed, 1e-13);
+    escribirRaizAArchivo(raiznr, 0.8049885393484, "output/extra_newRaph_f2_conBisDeArranque.csv");
+
+
+    biseccion(raizbis, f3, intervalo, 1e-5);
+    seed = raizbis->iteraciones[3];
+
+    newtonRaphson(raiznr, f3, derivada_f3, seed, 1e-13);
+    escribirRaizAArchivo(raiznr, 0.9, "output/extra_newRaph_f3_conBisDeArranque.csv");
+
+    free(raizbis);
+    free(raiznr);
+}
+
 int main(){
 
     double tolerancia1 = 1e-5;
@@ -173,6 +203,8 @@ int main(){
     printf("===F3===\n\n");
     estudiar_funciones(tolerancia2, f3, derivada_f3,
                        derivada2_f3, g3, x_real_f3, "output/f3-10e-13_", intervalo, semillanrf3);
+
+    analisis_adicional();
 
     return 0;
 }
