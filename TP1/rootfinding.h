@@ -55,7 +55,7 @@ void escribirRaizAArchivo(raiz_t *raiz, double x_real, char* filename)
 {
     if (!raiz)
         return;
-    FILE *file = fopen(filename, "w");
+    FILE* file = fopen(filename, "w");
     fprintf(file,
             "n;x_n;|x_n - x_n-1|;log(|x_n - x_n-1|);|x_n - x_r|;log(|x_n - x_r|);alpha;lambda\n");
     double alpha, lambda, itErr, absErr;
@@ -63,14 +63,13 @@ void escribirRaizAArchivo(raiz_t *raiz, double x_real, char* filename)
     for (int i = 0; i < raiz->size_iteraciones; i++) {
         alpha = getAlpha(raiz, i);
         lambda = getLambda(raiz, i, alpha);
-        //itErr = (i == 0 ? 0 : raiz->iteraciones[i] - raiz->iteraciones[i - 1]);
+        itErr = (i == 0 ? 0 : raiz->iteraciones[i] - raiz->iteraciones[i - 1]);
         absErr = fabs(raiz->iteraciones[i] - x_real);
 
         fprintf(file, "%d;%gf;%gf;%gf;%gf;%gf;%gf;%gf\n",
                 i+1,
                 raiz->iteraciones[i],
-                //fabs(itErr),
-                raiz->absErr,
+                fabs(itErr),
                 log10(fabs(itErr)),
                 fabs(absErr),
                 log10(fabs(absErr)),
@@ -126,7 +125,7 @@ raiz_t *ptofijo(raiz_t *raiz, double (*g)(double), double semilla,
     double p_prev;
     do {
         p_prev = p;
-        //p = p - f(p);}
+        //p = p - f(p);
         p = g(p_prev);
 
         absErr = fabs(p - p_prev);
@@ -207,16 +206,14 @@ raiz_t *newtonRaphsonMod(raiz_t *raiz, double (*f)(double), double (*deriv1)(dou
 raiz_t *secante(raiz_t *raiz, double (*f)(double), const double semillas[2], 
                 double maxAbsErr) 
 {
-    if (semillas[0] > semillas[1] || !raiz){
+    if (!raiz){
         return NULL;
     }
 
     double absErr = DEFAULT_ERR, relErr = DEFAULT_ERR;
     int i = 0;
-    //double p = semillas[0];
-    //double p_prev1 = semillas[1];
-    double p = 0.5;
-    double p_prev = 1.0; //funciona con estas semillas
+    double p = semillas[0];
+    double p_prev = semillas[1];
     double aux;
 
     do {
