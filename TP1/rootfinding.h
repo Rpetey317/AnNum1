@@ -66,7 +66,7 @@ void escribirRaizAArchivo(raiz_t *raiz, double x_real, char* filename)
         //itErr = (i == 0 ? 0 : raiz->iteraciones[i] - raiz->iteraciones[i - 1]);
         absErr = fabs(raiz->iteraciones[i] - x_real);
 
-        fprintf(file, "%d;%g;%g;%g;%g;%g;%g;%g\n",
+        fprintf(file, "%d;%gf;%gf;%gf;%gf;%gf;%gf;%gf\n",
                 i+1,
                 raiz->iteraciones[i],
                 //fabs(itErr),
@@ -216,7 +216,7 @@ raiz_t *secante(raiz_t *raiz, double (*f)(double), const double semillas[2],
     //double p = semillas[0];
     //double p_prev1 = semillas[1];
     double p = 0.5;
-    double p_prev = 1.0;
+    double p_prev = 1.0; //funciona con estas semillas
     double aux;
 
     do {
