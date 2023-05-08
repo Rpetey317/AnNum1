@@ -44,20 +44,20 @@ double derivada2_f3(double x)
     return 64 * (-0.3915 + 2.055 * x - 2.7 * pow(x, 2) + pow(x, 3)) * exp(-4 * pow(x - 0.9, 2));
 }
 
-// funciones modificadas para pto fijo
+// Funciones modificadas para pto fijo
 double g1(double x)
 {
-    return x- f1(x)/27.0;
+    return x- f1(x)/(27);
 }
 
 double g2(double x)
 {
-    return x - f2(x)/ (-42.1);
+    return x - f2(x)/(-13.6715);
 }
 
 double g3(double x)
 {
-    return x - f3(x)/0.9;
+    return x - f3(x)/(0.9);
 }
 
 void imprimir_raices(raiz_t *raiz, char* metodo)
@@ -76,7 +76,6 @@ void estudiar_funciones(double tolerancia, double (*f)(double), double (*deriv1)
 {
     int strsize = 40;
     char *filename = calloc(strsize, sizeof(char));
-    double semilla = 0.5;
 
     //bissección
     raiz_t *raizbis = malloc(sizeof(raiz_t));
@@ -140,7 +139,7 @@ int main(){
     double tolerancia1 = 1e-5;
     double tolerancia2 = 1e-13;
     double x_real_f1 = cbrt(19.0);
-    double x_real_f2 = 0.804989; //de WolframAlpha
+    double x_real_f2 = 0.8049885393484; //de WolframAlpha
     double x_real_f3 = 0.9;
     
     const double intervalo[] = {0.0, 3.0};
@@ -175,8 +174,6 @@ int main(){
     printf("===F3===\n\n");
     estudiar_funciones(tolerancia2, f3, derivada_f3,
                        derivada2_f3, g3, x_real_f3, "output/f3-10e-13_", intervalo, semillanrf3);
-
-
 
     return 0;
 }
