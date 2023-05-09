@@ -59,7 +59,7 @@ double serie_de_Leibniz(int n)
     { 
         resultado += (pow(-1, i) / (2*i +1));
     }
-    return resultado * 4.0;
+    return resultado;
 }
 
 double calcular_PI_con_Leibniz() {
@@ -69,6 +69,9 @@ double calcular_PI_con_Leibniz() {
 
 int main() 
 {
+
+    //calcular_PI_con_Newton_Raphson();
+    //calcular_PI_con_Leibniz();
 /**
 (c) Ejecutar los programas solicitados en a y b utilizando representacion de 
     punto flotante de 32 bits y comparar las respuestas obtenidas con
@@ -86,7 +89,7 @@ int main()
     printf("Usando la serie de Leibniz:\n");
     double resultado2;
     for (int i = 10; i <= 100000; i*=10) {
-        resultado2 = serie_de_Leibniz(i);
+        resultado2 = 4 * serie_de_Leibniz(i);
         printf("Para n=%i => el resultado fue: %.7f\n", i, resultado2);
     }
     
@@ -112,14 +115,6 @@ int main()
         printf("n=%i => el resultado fue: %.15f\n", i, resultado4);
     }
 
-/*
-(e) (OPCIONAL) Ejecutar los programas solicitados en a y b con una calculadora 
-    (aclarar marca y modelo) y comparar las respuestas obtenidas con 
-    n = 10, n = 100, n = 1000, n = 10000 y n = 100000 
-    (en caso de no alcanzar la memoria de la calculadora utilizar el maximo n posible).
-*/
-    //...
-
 
 /*
 (f) Representar las dos respuestas finales obtenidas (para n = 100000 y 
@@ -135,7 +130,7 @@ int main()
     printf("  π = %.5f +- %.5f\n", resultado2, error); //con Leibniz
 
     printf("en (d)\n");
-    printf("  π = %.15f +- 1e-15\n", resultado4);//con N-R
+    printf("  π = %.15f +- 1e-15\n", resultado3);//con N-R
     error = fabs(resultado4 - resultado3);
     printf("  π = %.5f +- %.5f\n", resultado4, error);//con Leibniz
 
