@@ -6,3 +6,7 @@
 /.idea/*
 /*.exe
 /*.o
+CMakeLists.txt
+.vscode/settings.json
+TP1/punto3.o
+TP2/output.csv

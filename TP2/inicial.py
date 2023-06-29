@@ -45,6 +45,7 @@ def pasoRK4(x, y):
     yp1 = y + (STEP/6)*(k1(x, y) + 2*k2(x, y) + 2*k3(x, y) + k4(x, y))
     return xp1, yp1
 
+#=========MAIN==========
 def main():
     t0, x0, y0 = 0, 2, 1
     tt, xx, yy = [t0], [x0], [y0]
