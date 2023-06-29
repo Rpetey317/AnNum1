@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib.ticker import MultipleLocator
 
+#====DATOS DEL PROBLEMA====
 A, B, C, D = 1.2, 0.6, 0.8, 0.3
 STEP = 0.1
 
@@ -11,11 +12,8 @@ def f(x, y):
 
 def g(x, y):
     return D*x*y - C*y
+#====DATOS DEL PROBLEMA====
 
-def pasoGauss(x, y):
-    xp1 = x + STEP*f(x, y)
-    yp1 = y + STEP*g(x, y)
-    return xp1, yp1
 
 #====COSAS DEL RUNGE-KUTTA====
 def m1(x, y):
@@ -43,10 +41,17 @@ def k4(x, y):
     return g(x + STEP*m2(x,y), y + STEP*k2(x,y))
 #====COSAS DEL RUNGE-KUTTA====
 
+#====METODOS DE RESOLUCIÓN====
 def pasoRK4(x, y):
     xp1 = x + (STEP/6)*(m1(x, y) + 2*m2(x, y) + 2*m3(x, y) + m4(x, y))
     yp1 = y + (STEP/6)*(k1(x, y) + 2*k2(x, y) + 2*k3(x, y) + k4(x, y))
     return xp1, yp1
+
+def pasoGauss(x, y):
+    xp1 = x + STEP*f(x, y)
+    yp1 = y + STEP*g(x, y)
+    return xp1, yp1
+#====METODOS DE RESOLUCIÓN====
 
 def generar_grafico(tt, xx, yy, output='output.png'):
     fig, ax = plt.subplots(figsize=(8, 5), layout='constrained')
