@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include "rootfinding.h"
 
 #define MAX_ITERACIONES 50
 #define TOLERANCIA_MAXIMA 1e-15 // 1* 10^(-15)
@@ -29,7 +30,7 @@ double metodo_Newton_Raphson(double (*funcion)(double), double (*derivada)(doubl
             printf("hubo un error, el metodo no convergió\n");
             return x;
         }
-    } while (fabs(funcion(x) - funcion(x_anterior)) > tolerancia);
+    } while (fabs(x - x_anterior) > tolerancia);
     
     return x;
 }
@@ -60,16 +61,17 @@ double serie_de_Leibniz(int n)
     }
     return resultado;
 }
+
 double calcular_PI_con_Leibniz() {
     double resultado = 4 * serie_de_Leibniz(500);
     return resultado;
 }
 
-
-
-
 int main() 
 {
+
+    //calcular_PI_con_Newton_Raphson();
+    //calcular_PI_con_Leibniz();
 /**
 (c) Ejecutar los programas solicitados en a y b utilizando representacion de 
     punto flotante de 32 bits y comparar las respuestas obtenidas con
@@ -82,13 +84,13 @@ int main()
     float tolerancia = 1e-7;
     int iteraciones = 0;
     float resultado1 = metodo_Newton_Raphson(funcion, derivada, semilla, tolerancia, &iteraciones);
-    printf("el resultado con Newton-Raphson en %i iteraciones fue: %.7f +- 1e-7\n", iteraciones, resultado1);
+    printf("El resultado con Newton-Raphson en %i iteraciones fue: %.7f +- 1e-7\n", iteraciones, resultado1);
 
-    printf("usando la serie de Leibniz:\n");
+    printf("Usando la serie de Leibniz:\n");
     double resultado2;
     for (int i = 10; i <= 100000; i*=10) {
         resultado2 = 4 * serie_de_Leibniz(i);
-        printf("n=%i => el resultado fue: %.7f\n", i, resultado2);
+        printf("Para n=%i => el resultado fue: %.7f\n", i, resultado2);
     }
     
 
@@ -98,8 +100,7 @@ int main()
     punto flotante de 64 bits y comparar las respuestas obtenidas con
     n = 10, n = 100, n = 1000, n = 10000 y n = 100000.
 */
-    printf("\n\n(D) PUNTO FLOTANTE 64 BITS\n");
-    printf("----------------------------\n");
+    printf("\n\n==========(D) PUNTO FLOTANTE 64 BITS==========\n\n");
 
     double semilla2 = 2;
     double tolerancia2 = 1e-15;
@@ -113,14 +114,6 @@ int main()
         resultado4 = 4 * serie_de_Leibniz(i);
         printf("n=%i => el resultado fue: %.15f\n", i, resultado4);
     }
-
-/*
-(e) (OPCIONAL) Ejecutar los programas solicitados en a y b con una calculadora 
-    (aclarar marca y modelo) y comparar las respuestas obtenidas con 
-    n = 10, n = 100, n = 1000, n = 10000 y n = 100000 
-    (en caso de no alcanzar la memoria de la calculadora utilizar el maximo n posible).
-*/
-    //...
 
 
 /*
@@ -137,7 +130,7 @@ int main()
     printf("  π = %.5f +- %.5f\n", resultado2, error); //con Leibniz
 
     printf("en (d)\n");
-    printf("  π = %.15f +- 1e-15\n", resultado4);//con N-R
+    printf("  π = %.15f +- 1e-15\n", resultado3);//con N-R
     error = fabs(resultado4 - resultado3);
     printf("  π = %.5f +- %.5f\n", resultado4, error);//con Leibniz
 
